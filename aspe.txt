@@ -1,0 +1,86 @@
+﻿using CrystalDecisions.CrystalReports.Engine;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Shaun
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+            
+            ReportDocument reportDocument = new ReportDocument();
+            reportDocument.Load(Application.StartupPath + "\\AllBuyersDetails.rpt");
+            reportDocument.SetParameterValue(@"From", "12/Dec/207");
+            reportDocument.SetParameterValue(@"to", DateTime.Now.ToString("d-MMM-yyyy"));
+
+            crystalReportViewer1.ReportSource = reportDocument;
+            crystalReportViewer1.Refresh();
+
+        }
+
+        private void crystalReportViewer1_Load(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
+
+using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+using CrystalDecisions.CrystalReports.Engine;
+using CrystalDecisions.Shared;
+
+public partial class AllBuyersViewer : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+    }
+
+    protected void Page_init(object sender, EventArgs e)
+    {
+        var from = Request["from"];
+        var to = Request["to"];
+
+        DateTime Form1 = DateTime.Parse(from);
+        DateTime to1 = DateTime.Parse(from);
+
+
+        //DateTime from = Convert.ToDateTime(Request["from"]);
+        //DateTime to = Convert.ToDateTime(Request["to"]);
+        var reportName = Request["report"];
+
+
+        CrystalReportSource1.Report.FileName = "reports/" + reportName + "";
+
+        ReportDocument report = new ReportDocument();
+        report.Load(Server.MapPath("reports/" + reportName + ""));
+        OrderDetailsDAL dal = new OrderDetailsDAL();
+        report.SetDataSource(dal.allBuyers_price(from, to));
+        report.SetParameterValue("@from", Form1.ToString("dd-MMM-yyyy"));
+        report.SetParameterValue("@to", to1.ToString("dd-MMM-yyyy"));
+        CrystalReportViewer1.ReportSource = report;
+        CrystalReportViewer1.DataBind();
+        CrystalReportViewer1.DisplayGroupTree = false;
+
+    }
+}
