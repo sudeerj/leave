@@ -1,0 +1,8 @@
+select d.department_name,m.first_name manager,e.first_name,e.last_name,e.hire_date,e.salary
+,SUM(e.salary) OVER (PARTITION BY m.first_name ) mangersal
+,SUM(e.salary) OVER (PARTITION BY d.department_name ) depsal
+from employees e,departments d,employees m
+where e.department_id=d.department_id
+and e.manager_id=m.employee_id
+--group by d.department_name
+order by  depsal desc,mangersal desc,e.salary desc

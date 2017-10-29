@@ -1,0 +1,5 @@
+select d.department_name,e.first_name,e.last_name,e.hire_date,e.salary,SUM(salary) OVER (PARTITION BY d.department_name ) ss
+from employees e,departments d
+where e.department_id=d.department_id
+--group by d.department_name
+order by ss desc,e.salary desc
